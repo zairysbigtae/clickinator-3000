@@ -62,4 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("start")?.addEventListener("click", startAutoclicker);
 
   document.getElementById("cars")?.getElementsByTagName("option")[4].setAttribute("selected", "selected");
+
+  // random comment
 });
