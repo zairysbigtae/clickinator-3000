@@ -3,18 +3,15 @@ import "./styles.css";
 
 let isRunning = false;
 
-
-
-async function startListener() {
+async function startListener(keybind: string) {
   try {
-    await invoke("handle_pause_resume_state", { keybind: "E" });
+    await invoke("handle_pause_resume_state", { keybind: keybind });
     isRunning = await invoke("get_autoclicker_state");
     console.log(`Autoclicker is now ${isRunning ? "running" : "stopped"}`);
   } catch (err) {
     console.error("Failed to toggle autoclicker: ", err);
   }
 }
-startListener();
 
 async function startAutoclicker() {
   try {
@@ -22,15 +19,6 @@ async function startAutoclicker() {
     console.log("autoclicker started");
   } catch (err) {
     console.error(err);
-  }
-}
-
-async function getCurrentKeybind() {
-  try {
-    let keybind = await invoke("get_current_keybind", { keybind: "A" });
-    return keybind;
-  } catch (err) {
-    console.error("Failed to get the current keybind: ", err);
   }
 }
 
@@ -55,13 +43,43 @@ function changeCurrentKeybindMessage() {
   }, 1000);
 }
 
+function returnDropdownSelectedChoice() {
+  let selectedKeybind = "";
+  setInterval(() => {
+    // TODO: take a look at the form and then implement the keybind changes based on the dropdown choice
+    const choice = document.getElementById("alphabets")?.getElementsByTagName("option");
+
+    if (choice) {
+      for (let i = 0; i < choice.length; i++) {
+        const option = choice[i];
+
+        if (option.getAttribute("selected") === "selected") {
+           selectedKeybind = option.value;
+        }
+      }
+    }
+  }, 1000);
+  return selectedKeybind
+}
+
 changeCurrentKeybindMessage();
+let choice = returnDropdownSelectedChoice();
+if (choice) {
+  startListener(choice);
+}
+
+async function getCurrentKeybind() {
+  try {
+    let keybind = await invoke("get_current_keybind", { keybind: choice });
+    return keybind;
+  } catch (err) {
+    console.error("Failed to get the current keybind: ", err);
+  }
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("stop")?.addEventListener("click", stopAutoclicker);
   document.getElementById("start")?.addEventListener("click", startAutoclicker);
 
-  document.getElementById("cars")?.getElementsByTagName("option")[4].setAttribute("selected", "selected");
-
-  // random comment
+  document.getElementById("alphabets")?.getElementsByTagName("option")[4].setAttribute("selected", "selected");
 });

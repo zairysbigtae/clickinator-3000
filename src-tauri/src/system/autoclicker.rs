@@ -24,7 +24,7 @@ pub fn start_autoclicker(state: State<Arc<AutoclickerState>>) {
                 }
 
                 if !paused {
-                    autopilot::mouse::click(Button::Left, Some(50));
+                    autopilot::mouse::click(Button::Left, Some(200));
                 }
             }
 
