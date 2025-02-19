@@ -24,7 +24,7 @@ pub fn start_autoclicker(state: State<Arc<AutoclickerState>>) {
                 }
 
                 if !paused {
-                    autopilot::mouse::click(Button::Left, Some(200));
+                    autopilot::mouse::click(Button::Left, Some(1000));
                 }
             }
 
@@ -75,8 +75,9 @@ pub fn handle_pause_resume_state(state: State<Arc<AutoclickerState>>, keybind: S
 
         println!("Thread started! Entering keybind loop...");
         loop {
-            let keys: Vec<Keycode> = device_state.get_keys();
+            let mut keys: Vec<Keycode> = device_state.get_keys();
             if keys.contains(&Keycode::LControl) && keys.contains(&keybind) {
+                keys.clear();
                 println!("Keybind pressed");
                 toggle_autoclicker(state_clone.clone());
                 std::thread::sleep(Duration::from_secs(1));
@@ -92,6 +93,6 @@ pub fn get_autoclicker_state(state: State<Arc<AutoclickerState>>) -> bool {
 
 #[tauri::command]
 pub fn get_current_keybind(_state: State<Arc<AutoclickerState>>, keybind: String) -> String {
-    let keybind = keybind.parse::<Keycode>().unwrap();
-    keybind.to_string()
+    println!("Executed, Received keybind: {}", keybind);
+    keybind
 }
