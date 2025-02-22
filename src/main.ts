@@ -63,9 +63,17 @@ function listenForKeybindChange(callback: (choice: string) => void) {
     callback(choice);
   });
 
-  // Initialize with the default selected keybind
   callback(dropdown.value);
 }
+
+async function setMpc() {
+  const cps_input = document.getElementById("mpc") as HTMLInputElement;
+  cps_input.addEventListener("input", function() {
+    invoke("set_mpc", { mpc: +this.value });
+    console.log("detected input");
+  });
+}
+setMpc();
 
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("stop")?.addEventListener("click", stopAutoclicker);
